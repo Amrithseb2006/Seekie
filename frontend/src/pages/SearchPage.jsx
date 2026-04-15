@@ -73,12 +73,15 @@ const UploadPanel = () => {
       </p>
 
       {status === "done" ? (
-  <div className="flex items-center justify-between">
+<div className="flex flex-wrap items-center justify-between gap-2">
     <div className="flex items-center gap-2">
       <span style={{ color: "var(--green)", fontSize: "18px" }}>✓</span>
-      <span style={{ color: "var(--text)", fontSize: "13px", fontWeight: 600 }}>{file.name}</span>
+      <span className="truncate max-w-[140px] sm:max-w-none"
+  style={{ color: "var(--text)", fontSize: "13px", fontWeight: 600 }}>
+  {file.name}
+</span>
     </div>
-    <div className="flex gap-3">                          {/* ← wrap in div */}
+    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">                      {/* ← wrap in div */}
       <button onClick={reset} className="font-mono"
         style={{ color: "var(--text-muted)", fontSize: "11px", background: "none", border: "none", cursor: "pointer" }}>
         upload another
@@ -93,7 +96,10 @@ const UploadPanel = () => {
       ) : status === "uploading" || status === "polling" ? (
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span style={{ color: "var(--text)", fontSize: "13px" }}>{file.name}</span>
+            <span className="truncate max-w-[140px] sm:max-w-none"
+  style={{ color: "var(--text)", fontSize: "13px" }}>
+  {file.name}
+</span>
             <span className="font-mono" style={{ color: "var(--accent)", fontSize: "12px" }}>{pct}%</span>
           </div>
           <div style={{ height: "3px", background: "var(--border)", borderRadius: "4px", marginBottom: "8px" }}>
@@ -153,13 +159,13 @@ const ChunkCard = ({ chunk, index, expanded, onToggle }) => {
     <div onClick={onToggle} className="rounded-xl cursor-pointer transition-all duration-200"
       style={{ background: "var(--surface)", border: `1px solid ${expanded ? "var(--border-hover)" : "var(--border)"}`, padding: "14px 16px" }}>
 
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <span className="font-mono flex-shrink-0"
             style={{ background: "var(--surface2)", color: "var(--accent)", fontSize: "10px", padding: "2px 7px", borderRadius: "4px" }}>
             #{index + 1}
           </span>
-          <span style={{ color: "var(--text)", fontSize: "13px", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <span style={{ color: "var(--text)", fontSize: "13px", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", wordBreak: "break-word" }}>
             {chunk.source || "Unknown source"}
           </span>
           {chunk.page !== "" && chunk.page !== undefined && (
@@ -174,7 +180,7 @@ const ChunkCard = ({ chunk, index, expanded, onToggle }) => {
       </div>
 
       {chunk.section && (
-        <p className="mt-1 font-mono" style={{ color: "var(--text-muted)", fontSize: "10px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <p className="mt-1 font-mono" style={{ color: "var(--text-muted)", fontSize: "10px", overflow: "hidden", textOverflow: "ellipsis", wordBreak: "break-word" }}>
           {chunk.section}
         </p>
       )}
@@ -226,14 +232,15 @@ const SearchPage = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)", position: "relative", overflow: "hidden" }}>
+     <div className="overflow-x-hidden"
+  style={{ minHeight: "100vh", background: "var(--bg)", position: "relative" }}>
       <div className="bg-orb" style={{ top: "-100px", left: "50%", transform: "translateX(-50%)" }} />
 
-      <div className="mx-auto px-4 py-16 relative z-10" style={{ maxWidth: "860px" }}>
+      <div className="mx-auto px-4 sm:px-6 py-10 sm:py-14 relative z-10 max-w-5xl">
 
         {/* Hero */}
         <div className="text-center mb-12 fade-up fade-up-1">
-          <h1 className="logo mb-3" style={{ fontSize: "clamp(40px, 6vw, 64px)", color: "var(--text)", lineHeight: 1.1 }}>
+          <h1 className="logo mb-3 text-4xl sm:text-5xl md:text-6xl">
             Seekie
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "15px", maxWidth: "480px", margin: "0 auto", lineHeight: 1.7 }}>
@@ -243,15 +250,18 @@ const SearchPage = () => {
         </div>
 
         {/* Search */}
-        <div className="flex justify-center mb-10 fade-up fade-up-2">
-          <SearchInput query={query} setQuery={setQuery} onSearch={handleSearch} loading={loading} />
-        </div>
+       <div className="flex justify-center mb-8 sm:mb-10 px-2 fade-up fade-up-2">
+  <div className="w-full max-w-2xl">
+    <SearchInput query={query} setQuery={setQuery} onSearch={handleSearch} loading={loading} />
+  </div>
+</div>
 
         {/* Two-column */}
-        <div className="grid gap-6 fade-up fade-up-3" style={{ gridTemplateColumns: "280px 1fr" }}>
+        <div className="grid gap-6 fade-up fade-up-3 
+  grid-cols-1 md:grid-cols-[260px_1fr]">
 
           {/* Left: Upload + Tips */}
-          <div>
+          <div className="flex flex-col gap-4">
             <UploadPanel />
             <div className="mt-4 rounded-xl p-4" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
               <p className="font-mono mb-3" style={{ color: "var(--text-muted)", fontSize: "11px", letterSpacing: "0.08em" }}>TIPS</p>
@@ -327,7 +337,7 @@ const SearchPage = () => {
 
             {!result && !loading && !error && (
               <div className="rounded-2xl flex flex-col items-center justify-center text-center"
-                style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "60px 32px", minHeight: "300px" }}>
+                style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "40px 20px", minHeight: "300px" }}>
                 <div style={{ fontSize: "36px", marginBottom: "16px", opacity: 0.4 }}>⌕</div>
                 <p style={{ color: "var(--text-muted)", fontSize: "14px", lineHeight: 1.7 }}>
                   Upload a document and ask<br />your first question to get started.

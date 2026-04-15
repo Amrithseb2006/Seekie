@@ -173,6 +173,18 @@ def _run_ingestion(job_id: str, file_path: str, use_image_captions: bool):
 def health():
     return {"status": "ok", "service": "MediRAG API"}
 
+@app.delete("/clear")
+def clear_index():
+    """Delete all vectors from the seekie-namespace."""
+    try:
+        from pinecone import Pinecone
+        pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+        index = pc.Index("seekie-rag")
+        index.delete(delete_all=True, namespace="seekie-namespace")
+        return {"status": "ok", "message": "Index cleared."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/ingest", status_code=202)
 async def ingest_pdf(
